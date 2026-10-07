@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Is Your Vacation Personality?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-100 flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+
+    <!-- Container expansivo para ocupar a página inteira -->
+    <div class="w-full max-w-5xl bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 my-auto">
+        
+        <!-- Header / Banner -->
+        <div class="bg-gradient-to-r from-teal-500 to-emerald-600 p-8 sm:p-10 text-white text-center relative">
+            <span class="inline-block bg-white/20 text-xs uppercase tracking-wider px-3 py-1 rounded-full mb-3 font-semibold">Quizur Style Quiz</span>
+            <h1 class="text-3xl font-extrabold tracking-tight sm:text-5xl">What Is Your Vacation Personality?</h1>
+            <p class="mt-3 text-teal-100 text-base sm:text-lg max-w-2xl mx-auto">Do you change when you travel? Answer 5 quick questions to discover your travel alter-ego!</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div id="progress-container" class="w-full bg-gray-200 h-2 hidden">
+            <div id="progress-bar" class="bg-teal-500 h-2 w-0 transition-all duration-300"></div>
+        </div>
+
+        <!-- Quiz Container -->
+        <div class="p-6 sm:p-10 lg:p-12">
+            
+            <!-- Start Screen -->
+            <div id="start-screen" class="text-center py-8 max-w-3xl mx-auto">
+                <div class="text-7xl mb-6">✈️🧳📸</div>
+                <p class="text-gray-600 text-lg mb-8 leading-relaxed">
+                    Research shows that many people lower their inhibitions and embrace a completely different identity when traveling abroad. Are you a thrill-seeker, a culture seeker, or a party lover?
+                </p>
+                <button onclick="startQuiz()" class="w-full sm:w-auto px-10 py-4 bg-teal-600 hover:bg-teal-700 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-teal-500/30 transition duration-200 transform hover:-translate-y-0.5">
+                    Start Quiz Now
+                </button>
+            </div>
+
+            <!-- Question Screen -->
+            <div id="question-screen" class="hidden max-w-4xl mx-auto">
+                <div class="flex justify-between items-center mb-6 text-sm font-semibold text-gray-400 uppercase tracking-wider">
+                    <span>Question <span id="current-question-num">1</span> of 5</span>
+                    <span id="category-badge" class="bg-teal-50 text-teal-700 px-3 py-1 rounded-md">Travel Style</span>
+                </div>
+                
+                <h2 id="question-text" class="text-2xl sm:text-3xl font-bold text-gray-800 mb-8 leading-snug">
+                    <!-- Question goes here -->
+                </h2>
+
+                <div id="options-container" class="space-y-4">
+                    <!-- Options go here -->
+                </div>
+            </div>
+
+            <!-- Result Screen -->
+            <div id="result-screen" class="hidden text-center py-6 max-w-3xl mx-auto">
+                <span class="text-sm font-bold text-teal-600 uppercase tracking-widest">Your Travel Profile</span>
+                <h2 id="result-title" class="text-3xl sm:text-4xl font-extrabold text-gray-900 mt-2 mb-4">
+                    <!-- Result Title -->
+                </h2>
+                <div id="result-icon" class="text-7xl mb-6"></div>
+                <p id="result-description" class="text-gray-600 text-lg leading-relaxed mb-8 bg-slate-50 p-6 sm:p-8 rounded-xl border border-slate-100 text-left">
+                    <!-- Result Description -->
+                </p>
+                <button onclick="restartQuiz()" class="px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white font-semibold text-lg rounded-xl shadow transition duration-200">
+                    Take Quiz Again 🔄
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "1. You just arrived at your destination hotel. What is the very first thing you do?",
+                options: [
+                    { text: "Change into comfortable clothes and head straight to the pool or beach with a cold drink.", type: "relaxer" },
+                    { text: "Drop your luggage and immediately head out to explore the street food stalls and local markets.", type: "adventurer" },
+                    { text: "Ask the hotel staff for the best spots to meet people or check local events happening tonight.", type: "butterfly" },
+                    { text: "Unpack carefully and review your pre-planned itinerary of museums, monuments, and historic sites.", type: "explorer" }
+                ]
+            },
+            {
+                question: "2. How do you handle mealtime when traveling in a foreign country?",
+                options: [
+                    { text: "I look for authentic, famous museums or historic restaurants with deep culinary traditions.", type: "explorer" },
+                    { text: "I pick a cozy café with a great view where I can sit, relax, and eat at my own slow pace.", type: "relaxer" },
+                    { text: "I try the wildest, most unusual street food I can find — even if I don't know what it is!", type: "adventurer" },
+                    { text: "I choose a lively, crowded bar or communal dining table where I can chat with travelers and locals.", type: "butterfly" }
+                ]
+            },
+            {
+                question: "3. What is your ideal afternoon activity on vacation?",
+                options: [
+                    { text: "Joining a night tour, a beach party, or striking up a conversation with strangers at a hostel bar.", type: "butterfly" },
+                    { text: "Renting a scooter, going scuba diving, or hiking to a secret cliff high above the city.", type: "adventurer" },
+                    { text: "Visiting an ancient temple, taking a guided walking tour, or exploring local architecture.", type: "explorer" },
+                    { text: "Taking a long nap, getting a massage, or reading a good book under a shaded umbrella.", type: "relaxer" }
+                ]
+            },
+            {
+                question: "4. You get completely lost in a city where you don't speak the native language. How do you feel?",
+                options: [
+                    { text: "Thrilled! Getting lost is the ultimate adventure — you find the best hidden gems this way.", type: "adventurer" },
+                    { text: "A bit annoyed, but I find a lovely bench or café to sit down and figure it out quietly.", type: "relaxer" },
+                    { text: "Excited to practice my body language and attempt to make a new local friend while asking for directions.", type: "butterfly" },
+                    { text: "Fascinated! I use my offline map to discover what historic neighborhood or landmark I stumbled into.", type: "explorer" }
+                ]
+            },
+            {
+                question: "5. What do you feel is the main reason you lower your inhibitions and travel abroad?",
+                options: [
+                    { text: "To escape daily stress, slow time down, and give my mind a total rest.", type: "relaxer" },
+                    { text: "To step out of my comfort zone, feel adrenaline, and embrace new risks.", type: "adventurer" },
+                    { text: "To connect with diverse people, share stories, and build vibrant global memories.", type: "butterfly" },
+                    { text: "To learn about foreign history, understand different mindsets, and broaden my world view.", type: "explorer" }
+                ]
+            }
+        ];
+
+        const results = {
+            adventurer: {
+                title: "The Bold Adventurer 🧗‍♂️🌋",
+                icon: "🧗‍♂️",
+                description: "When you travel, your home identity disappears and your thrill-seeking alter-ego takes over! You lower your inhibitions to push your limits, try extreme foods, and seek raw excitement. You don't just visit a destination — you conquer it!"
+            },
+            relaxer: {
+                title: "The Chilled Relaxer 🏖️🧘",
+                icon: "🏖️",
+                description: "Your main goal on vacation is total rejuvenation. At home, you deal with schedules and stress, but abroad, your vacation identity is calm, quiet, and completely unhurried. You embrace slow travel, comfort, and peaceful moments."
+            },
+            butterfly: {
+                title: "The Social Butterfly 🍹🗣️",
+                icon: "🍹",
+                description: "Travel gives you anonymity, and you use it to become the most outgoing version of yourself! You thrive on meeting new people, sharing laughs with locals, learning about different cultures through personal stories, and making friends worldwide."
+            },
+            explorer: {
+                title: "The Culture Explorer 🏛️📜",
+                icon: "🏛️",
+                description: "You see travel as the ultimate masterclass. You are curious, observant, and deeply respectful of history and tradition. Your vacation personality is enriched by learning, exploring heritage sites, and uncovering the soul of every destination."
+            }
+        };
+
+        let currentQuestion = 0;
+        let scores = { adventurer: 0, relaxer: 0, butterfly: 0, explorer: 0 };
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('question-screen').classList.remove('hidden');
+            document.getElementById('progress-container').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('current-question-num').innerText = currentQuestion + 1;
+            document.getElementById('question-text').innerText = q.question;
+            
+            // Update progress bar
+            const progress = ((currentQuestion) / questions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = "w-full text-left p-5 rounded-xl border border-gray-200 hover:border-teal-500 hover:bg-teal-50/50 transition duration-150 flex items-center justify-between group";
+                button.innerHTML = `
+                    <span class="text-base sm:text-lg text-gray-700 font-medium group-hover:text-teal-900">${option.text}</span>
+                    <span class="text-gray-300 group-hover:text-teal-500 font-bold ml-4">→</span>
+                `;
+                button.onclick = () => selectOption(option.type);
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        function selectOption(type) {
+            scores[type]++;
+            currentQuestion++;
+
+            if (currentQuestion < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('question-screen').classList.add('hidden');
+            document.getElementById('progress-container').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            let winningType = 'relaxer';
+            let maxScore = -1;
+            for (const [type, score] of Object.entries(scores)) {
+                if (score > maxScore) {
+                    maxScore = score;
+                    winningType = type;
+                }
+            }
+
+            const result = results[winningType];
+            document.getElementById('result-title').innerText = result.title;
+            document.getElementById('result-icon').innerText = result.icon;
+            document.getElementById('result-description').innerText = result.description;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            scores = { adventurer: 0, relaxer: 0, butterfly: 0, explorer: 0 };
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
